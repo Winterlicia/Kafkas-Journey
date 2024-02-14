@@ -1,7 +1,7 @@
 import java.awt.image.BufferedImage;
 
 public class Hero {
-	//Hero's'ATTRIBUTES: image, board position, stats -- do image first
+	//Hero's ATTRIBUTES: image, board position, stats
 	BufferedImage imgHero;
 	int intRowPos = 19;
 	int intColPos = 10;

@@ -1,13 +1,13 @@
 import java.awt.image.BufferedImage;
 
 public class Enemy {
-    //Hero's'ATTRIBUTES: image, board position, stats -- do image first
+    //Enemy's ATTRIBUTES: image and stats
     BufferedImage imgEnemy;
     int intHP = 40;
     int intDMG = 10;
     int intDEF = 10;
 
-    //Initialize the Object's (Hero) constructor with its parameters:
+    //Initialize the Object's (Enemy) constructor with its parameters:
     public Enemy(BufferedImage imgEnemy, int intHP, int intDMG, int intDEF) {
         this.imgEnemy = imgEnemy;
         this.intHP = intHP;
@@ -17,8 +17,8 @@ public class Enemy {
 
     //NOTE: G&S FOR DMG, DEF MAY NOT BE NEEDED, DEPENDS IF ITEMS TO INCREASE THOSE ARE ADDED
     //Below are Getters and Setters of the object:
-    // 1) Setters allow us to continuously update the Hero's attributes.
-    // 2) Getters allow us to take the Hero's current attributes to control the game's mechanics.
+    // 1) Setters allow us to continuously update the Enemy's attributes.
+    // 2) Getters allow us to take the Enemy's current attributes to control the battle engine.
     public BufferedImage getEnemyImage() {
         return this.imgEnemy;
     }

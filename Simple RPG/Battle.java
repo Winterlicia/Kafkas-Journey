@@ -19,6 +19,7 @@ public class Battle {
 
     }
 
+    //Battle Listener triggers when the hero steps on an "e" tile.
     public static void battleListener(Console con, Hero hero, Enemy enemy, BufferedImage imgBattlefield, BufferedImage imgHero) {
 
         //Initialize variables:
@@ -64,7 +65,7 @@ public class Battle {
                 con.repaint();
                 break;
 
-            } else {
+            } else if (chrChoice == 'b') {
                 //Reset the screen to prepare for battle:
                 Main.resetScreen(con);
 

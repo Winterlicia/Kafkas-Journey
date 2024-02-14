@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) {
 		Console con = new Console("RPG Game", 800, 600); //REMEMBER TO CHANGE THIS BACK TO 20X20 PIXELS
 
-		//Initialize the map(s) 
+		//Initialize the map(s)
 		String[][] strMap = new String[20][20];
 		TextInputFile map = new TextInputFile("map2.csv");
 
@@ -56,7 +56,7 @@ public class Main {
 			//Get the current key being pressed and control movement of the hero with it:
 			char chrCurrentKey = con.getChar();
 
-		//Move the hero based on the realtime character input:
+			//Move the hero based on the realtime character input:
 			//Going Up: Check y-axis - 1 in canMove function
 			if (chrCurrentKey == 'w' && hero.canMove(hero.getCurrentRowPosition() - 1, hero.getCurrentColPosition(), strMap, "vertical")) {
 				hero.setNewRowPosition(hero.getCurrentRowPosition() - 1);
@@ -111,11 +111,14 @@ public class Main {
 					renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy);
 					Battle.blnWonBattle = false; //Set back to false, reset next battle
 				} else {
-					//If not, player should be dead -- we can just make sure of it here:
-					deathMenu(con);
-					break;
-				}
+					//If it gets to here, then the player has retreated.
+					//Need to fix and issue where the player's image continues to be in the tile after retreating -- refresh the tile:
+					con.setDrawColor(Color.BLACK);
+					con.drawRect(hero.getCurrentColPosition()*30, hero.getCurrentRowPosition()*30, 30, 30);
+					con.repaint();
 
+					con.drawImage(imgEnemy,hero.getCurrentColPosition()*30, hero.getCurrentRowPosition()*30);
+				}
 				con.repaint();
 			}
 
@@ -134,7 +137,7 @@ public class Main {
 		String[] strSplit;
 		String[][] strMap = new String[20][20];
 
-		//Initialize the values of the map based on the csv file. 
+		//Initialize the values of the map based on the csv file.
 		for (int row = 0; row < 20; row++) {
 			String strLine = mapFile.readLine();
 			strSplit = strLine.split(",");
@@ -180,7 +183,7 @@ public class Main {
 		con.repaint();
 
 	}
-	
+
 	//Function to display the Hero's stats:
 	public static void displayHeroStats(Console con, Hero objHero) {
 		//Write the HUD Player Stats:
@@ -215,8 +218,8 @@ public class Main {
 		con.fillRect(650, 200, 250, 400);
 		con.repaint();
 	}
-	
-	
+
+
 	//MENUS:
 	public static void startMenu(Console con) {
 		con.drawString("Kafka's Battle", 300, 200);
@@ -240,5 +243,5 @@ public class Main {
 		con.fillRect(0, 0, 800, 600);
 		con.repaint();
 	}
-	
+
 }
