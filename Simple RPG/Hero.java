@@ -87,7 +87,7 @@ public class Hero {
 
 	//Add items based on the current items that the hero has:
 	public void setNewItem(String strAddItem) {
-		strItems[this.intEnemiesDefeated] = strAddItem;
+		strItems[this.intEnemiesDefeated-1] = strAddItem;
 	}
 	
 	//Other Functions:

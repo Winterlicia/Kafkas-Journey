@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 
 public class Main {
 	public static void main(String[] args) {
-		Console con = new Console("RPG Game", 800, 600); //REMEMBER TO CHANGE THIS BACK TO 20X20 PIXELS
+		Console con = new Console("Kafka's Journey", 800, 600); //REMEMBER TO CHANGE THIS BACK TO 20X20 PIXELS
 
 		//Initialize the map(s)
 		String[][] strMap = new String[20][20];
@@ -29,13 +29,14 @@ public class Main {
 		BufferedImage imgBattlefield = con.loadImage("Battlefield.png");
 		BufferedImage imgHeroBattle = con.loadImage("HeroBattle.png");
 		BufferedImage imgEnemyBattle = con.loadImage("EnemyLarge.png");
+		BufferedImage imgDoor = con.loadImage("Door.png");
 
 		//Initiate the Start Menu at the beginning:
 		startMenu(con);
 
 		//Load the map using the functions:
 		strMap = loadMap(map);
-		renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy);
+		renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy, imgDoor);
 
 		//Initialize a new instance of the "Hero" object for the player:
 		String[] strItems = new String[5];
@@ -47,8 +48,9 @@ public class Main {
 		//Main game loop:
 		while (true) {
 			//Display the character, stats, etc. Should always be actively updating because of the while true loop.
-			renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy);
+			renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy, imgDoor);
 			displayHeroStats(con, hero);
+			displayHeroItems(con, hero.getItemList());
 			//Note that row = y-axis, col = x-axis
 			con.drawImage(hero.getHeroImage(), hero.getCurrentColPosition() * 30, hero.getCurrentRowPosition() * 30);
 			con.repaint();
@@ -75,8 +77,6 @@ public class Main {
 			//Going Right: Check x-axis + 1 in canMove function
 			else if (chrCurrentKey == 'd' && hero.canMove(hero.getCurrentRowPosition(), hero.getCurrentColPosition() + 1, strMap, "horizontal")) {
 				hero.setNewColPosition(hero.getCurrentColPosition() + 1);
-			} else {
-				System.out.println("Invalid character input");
 			}
 
 			//Check if the player hits water -- in this case, set the hero's HP to 0.
@@ -108,7 +108,7 @@ public class Main {
 				//Check if the player has won -- if yes, get rid of that enemy and replace it with a grass block:
 				if (Battle.blnWonBattle == true) {
 					strMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()] = "g";
-					renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy);
+					renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy, imgDoor);
 					Battle.blnWonBattle = false; //Set back to false, reset next battle
 				} else {
 					//If it gets to here, then the player has retreated.
@@ -122,13 +122,52 @@ public class Main {
 				con.repaint();
 			}
 
-			//If the player dies, the game is over. (Death when hero HP = 0):
-			if (hero.getCurrentHP() <= 0) {
-				deathMenu(con);
+			//Activate a mystery door when the Hero collects all three keys (when he defeats all five enemies):
+			if (hero.getEnemiesDefeated() == 5) {
+				//Clear Hero's keys to open the door:
+				hero.strItems[0] = "";
+				hero.strItems[2] = "";
+				hero.strItems[4] = "";
+
+				//Add doors to the map:
+				strMap[9][0] = "d";
+				strMap[10][0] = "d";
+
+				//Inform the Player of the new door:
+				resetScreen(con);
+				con.setDrawColor(Color.WHITE);
+				con.drawString("A mysterious door opened.", 250, 200);
+				con.drawString("As Kafka approaches the door, it becomes colder and colder.", 30, 225);
+				con.sleep(3000);
+
+				con.drawString("Press any key to continue", 250, 400);
+				con.repaint();
+				con.getKey();
+
+				//Set enemies defeated back to zero to ensure this if statement does not trigger again:
+				hero.setNewEnemiesDefeated(0);
+			}
+
+			//Event listener for the door -- break and start a new game loop for the boss room:
+			if (strMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("d")) {
 				break;
 			}
 
+			//If the player dies, the game is over. (Death when hero HP = 0):
+			if (hero.getCurrentHP() <= 0) {
+				deathMenu(con);
+			}
+
 		}
+
+		//Boss Map Game Loop
+		String[][] strBossMap = new String[20][20];
+		strBossMap = loadMap(new TextInputFile("bossmap.csv"));
+
+		while (true) {
+
+		}
+
 	}
 
 	//Function to load the map from the .csv file data:
@@ -153,7 +192,7 @@ public class Main {
 	}
 
 	//Function to render the map, adding the grass, tree, building, water blocks, etc:
-	public static void renderMap(Console con, String[][] strMap, BufferedImage imgGrass, BufferedImage imgTree, BufferedImage imgBuilding, BufferedImage imgWater, BufferedImage imgEnemy) {
+	public static void renderMap(Console con, String[][] strMap, BufferedImage imgGrass, BufferedImage imgTree, BufferedImage imgBuilding, BufferedImage imgWater, BufferedImage imgEnemy, BufferedImage imgDoor) {
 
 		//Initialize the map's UI with drawImage function:
 		for (int row = 0; row < 20; row++) {
@@ -175,6 +214,9 @@ public class Main {
 						break;
 					case "e":
 						con.drawImage(imgEnemy, col * 30, row * 30);
+						break;
+					case "d":
+						con.drawImage(imgDoor, col * 30, row * 30);
 						break;
 				}
 
@@ -201,17 +243,20 @@ public class Main {
 
 	//Function to display the Hero's Current Item List
 	public static void displayHeroItems(Console con, String[] strItems) {
+		System.out.println("TEST: "+Arrays.deepToString(strItems));
 		con.setDrawColor(Color.WHITE);
-		con.drawString("HERO ITEMS: ", 650, 400);
+		con.drawString("HERO ITEMS: ", 650, 200);
+
 		for (int i = 0; i < 5; i++) {
 			//If Array Index is null, stop printing items:
 			if (strItems[i] == null) {
 				break;
 			} else {
 				//Add array data to the HUD:
-				con.drawString(String.valueOf(i+1)+". "+strItems[i], 660, 425+i*25);
+				con.drawString(String.valueOf(i+1)+". "+strItems[i], 660, 225+i*25);
 			}
 		}
+
 		con.repaint();
 
 		con.setDrawColor(Color.BLACK);
@@ -222,8 +267,26 @@ public class Main {
 
 	//MENUS:
 	public static void startMenu(Console con) {
-		con.drawString("Kafka's Battle", 300, 200);
+		con.drawString("Kafka's Journey", 300, 200);
 		con.drawString("Press any key to continue", 250, 300);
+		con.repaint();
+		con.getKey();
+
+		//Add story:
+		resetScreen(con);
+		con.setDrawColor(Color.WHITE);
+		con.drawString("Known as one of the most feared Stellaron Hunters,", 100, 200);
+		con.drawString("Kafka roams across the planets", 225, 225);
+		con.drawString("killing the Stellaron Aeons that terrorize the universe.", 45, 250);
+		con.drawString("Kafka now travels to the Xianzhou Luofu, a planet ", 100, 275);
+		con.drawString("inhabited by the Ice Aeon that threatens to ", 125, 300);
+		con.drawString("freeze the entirety of civilization.", 200, 325);
+		con.drawString("Kafka's mission now becomes clear: ", 210, 375);
+		con.drawString("Save the Xianzhou Luofu. Destroy Yanqing, the Ice Aeon.", 50, 400);
+		con.repaint();
+		con.sleep(5000);
+
+		con.drawString("Press any key to continue", 250, 450);
 		con.repaint();
 		con.getKey();
 	}
