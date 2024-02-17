@@ -4,20 +4,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Battle {
+    //Initialize static-global variable (needed in Main program)
     public static boolean blnWonBattle = false;
-
-    public static void main(String[] args) {
-        Console con = new Console("Battle Testing", 800, 600);
-
-        String[] strItems = new String[5];
-        Hero hero = new Hero(con.loadImage("Hero.png"), 10, 10, 50, 15, 10, 0, strItems);
-        Enemy enemy = new Enemy(con.loadImage("EnemyLarge.png"), 60, 10, 10);
-        BufferedImage imgBattlefield = con.loadImage("Battlefield.png");
-        BufferedImage imgHeroBattle = con.loadImage("HeroBattle.png");
-
-        battleListener(con, hero, enemy, imgBattlefield, imgHeroBattle);
-
-    }
 
     //Battle Listener triggers when the hero steps on an "e" tile.
     public static void battleListener(Console con, Hero hero, Enemy enemy, BufferedImage imgBattlefield, BufferedImage imgHero) {
@@ -36,12 +24,11 @@ public class Battle {
         con.drawImage(enemy.getEnemyImage(), 450, 100);
         con.repaint();
 
-        //Before the battle initiates, we need to see if the player wants to battle or retreat for -10 life:
+        //Draw the battle and retreat buttons:
         con.setDrawColor(Color.WHITE);
         con.drawRect(25, 400, 200, 100);
         con.drawString("(B)attle", 75, 425);
-
-        //Only draw the Retreat button for a normal enemy battle:
+        
         con.drawRect(375, 400, 200, 100);
         con.drawString("(R)etreat", 425, 425);
 
@@ -58,6 +45,7 @@ public class Battle {
                 }
             }
 
+            //Before the battle initiates, we need to see if the player wants to battle or retreat for -10 life:
             if (chrChoice == 'r') {
                 //If the player chooses to retreat, take away 10 life and reset the Console background
                 hero.setNewHP(hero.getCurrentHP() - 10);
@@ -114,6 +102,7 @@ public class Battle {
 
                         //Animation and Stats of Hero Basic Attack:
                         if (chrChoice == 'm') {
+                            
                             //Animate sword slashing vertically:
                             int intAnimationCount = 0;
                             while (intAnimationCount < 25) { //Enemy Size is 200x200 pixels
@@ -159,6 +148,7 @@ public class Battle {
                                 con.setDrawColor(Color.WHITE);
                                 con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                             } else {
+                                //Normal damage:
                                 intDMGDealt = hero.getCurrentDMG();
                                 renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                 con.setDrawColor(Color.WHITE);
@@ -214,6 +204,7 @@ public class Battle {
                                 con.setDrawColor(Color.WHITE);
                                 con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                             } else {
+                               //Normal damage:
                                 intDMGDealt = (int) (hero.getCurrentDMG() * 1.25);
                                 renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                 con.setDrawColor(Color.WHITE);
@@ -222,7 +213,7 @@ public class Battle {
                             con.repaint();
                             con.sleep(1000);
 
-                            //Attack Formula: When setting new HP, consider Hero DMG dealt and defense:
+                            //Attack Formula: When setting new HP, consider Hero DMG dealt and defense, apply to enemy:
                             enemy.setNewHP(enemy.getCurrentHP() - intDMGDealt + (int) (0.5 * enemy.getCurrentDEF()));
 
                             //Add a Damage OverTime (DOT) effect on the enemy's next turn:
@@ -298,7 +289,8 @@ public class Battle {
                             con.setDrawColor(Color.WHITE);
                             con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                         } else {
-                            intDMGDealt = hero.getCurrentDMG();
+                            //Normal damage:
+                            intDMGDealt = enemy.getCurrentDMG();
                             renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                             con.setDrawColor(Color.WHITE);
                             con.drawString("Damage: "+String.valueOf(intDMGDealt), 300, 120);
@@ -356,7 +348,7 @@ public class Battle {
         con.drawImage(imgHero, 50, 100);
         //Enemy x,y-coordinates change based on normal enemy or boss:
         if (enemy.getCurrentDMG() != 20) {
-            //Note that the normal enemy's DMG will never hit 20 -- since it goes up by increments of two from Outrage stacks,
+            //Note that the normal enemy's DMG will never hit 20 -- since it goes up by increments of three from Outrage stacks,
             //enemy's DMG will be 10, 13, 16, 19, 22 != 20
             con.drawImage(enemy.getEnemyImage(), 450, 100);
         } else {
