@@ -4,12 +4,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.awt.image.BufferedImage;
 
-/* NOTES:
- * Could maybe integrate items into the game by making it so that the user would gain items after killing certain number of enemies
- * Using above idea, it is possible to make a boss battle fight that can only be won after the user kills enough enemies for the items to help
- * 
- * 
- */ 
+// IMPORTANT NOTE: ALL EVENT LISTENERS REQUIRE YOU TO DOUBLE TAP THE KEY ON YOUR KEYBOARD //
 
 public class Main {
 	public static void main(String[] args) {
@@ -17,11 +12,12 @@ public class Main {
 
 		//Initialize the map(s)
 		String[][] strMap = new String[20][20];
-		TextInputFile map = new TextInputFile("map2.csv");
+		TextInputFile map = new TextInputFile("map.csv");
+		int intLevel = 1; //Level 1 = Activate Regular Map, Level 2 = Activate Boss Map
 
 		//Initialize the images to be used:
 		BufferedImage imgGrass = con.loadImage("Grass.jpg");
-		BufferedImage imgTree = con.loadImage("TreeTest.png");
+		BufferedImage imgTree = con.loadImage("Tree.png");
 		BufferedImage imgWater = con.loadImage("Water.png");
 		BufferedImage imgBuilding = con.loadImage("Building.png");
 		BufferedImage imgHero = con.loadImage("Hero.png");
@@ -32,7 +28,7 @@ public class Main {
 		BufferedImage imgDoor = con.loadImage("Door.png");
 
 		//Initiate the Start Menu at the beginning:
-		startMenu(con);
+		startMenu(con, imgWater, imgBuilding, imgTree, imgEnemy);
 
 		//Load the map using the functions:
 		strMap = loadMap(map);
@@ -46,7 +42,8 @@ public class Main {
 		resetScreen(con);
 
 		//Main game loop:
-		while (true) {
+		while (intLevel == 1) {
+			resetScreen(con);
 			//Display the character, stats, etc. Should always be actively updating because of the while true loop.
 			renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy, imgDoor);
 			displayHeroStats(con, hero);
@@ -101,14 +98,13 @@ public class Main {
 			//Check when the player encounters an enemy:
 			if (strMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("e")) {
 				//Initialize a new instance of the "Enemy" object for the enemy, everytime "e" is called:
-				Enemy enemy = new Enemy(imgEnemyBattle, 40, 10, 10);
+				Enemy enemy = new Enemy(imgEnemyBattle, 45, 10, 10);
 
 				//Call the battle functions (do later)
 				Battle.battleListener(con, hero, enemy, imgBattlefield, imgHeroBattle);
 				//Check if the player has won -- if yes, get rid of that enemy and replace it with a grass block:
 				if (Battle.blnWonBattle == true) {
 					strMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()] = "g";
-					renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy, imgDoor);
 					Battle.blnWonBattle = false; //Set back to false, reset next battle
 				} else {
 					//If it gets to here, then the player has retreated.
@@ -119,7 +115,6 @@ public class Main {
 
 					con.drawImage(imgEnemy,hero.getCurrentColPosition()*30, hero.getCurrentRowPosition()*30);
 				}
-				con.repaint();
 			}
 
 			//Activate a mystery door when the Hero collects all three keys (when he defeats all five enemies):
@@ -128,10 +123,18 @@ public class Main {
 				hero.strItems[0] = "";
 				hero.strItems[2] = "";
 				hero.strItems[4] = "";
+				//Rearrange item list now that Keys are gone:
+				hero.strItems[0] = "Sword";
+				hero.strItems[1] = "Shield";
+				for (int i = 2; i < 4; i++) {
+					hero.strItems[i] = null;
+				}
 
-				//Add doors to the map:
-				strMap[9][0] = "d";
-				strMap[10][0] = "d";
+				//Open up the tree-blocked area in the middle of the map and add doors to the map:
+				strMap[8][9] = "g";
+				strMap[8][10] = "g";
+				strMap[11][9] = "d";
+				strMap[11][10] = "d";
 
 				//Inform the Player of the new door:
 				resetScreen(con);
@@ -150,6 +153,7 @@ public class Main {
 
 			//Event listener for the door -- break and start a new game loop for the boss room:
 			if (strMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("d")) {
+				intLevel = 2;
 				break;
 			}
 
@@ -160,11 +164,130 @@ public class Main {
 
 		}
 
-		//Boss Map Game Loop
-		String[][] strBossMap = new String[20][20];
-		strBossMap = loadMap(new TextInputFile("bossmap.csv"));
+	//Boss Map Game Loop:
 
-		while (true) {
+		//Initialize required variables:
+		String[][] strBossMap = new String[20][20];
+		TextInputFile bossmap = new TextInputFile("bossmap.csv");
+		strBossMap = loadMap(bossmap);
+		System.out.println(Arrays.deepToString(strBossMap));
+
+		BufferedImage imgIce = con.loadImage("Ice.png"); //The ice will become the grass
+		BufferedImage imgFrozenTree = con.loadImage("FrozenTree.png");
+		BufferedImage imgBossSmall = con.loadImage("BossSmall.png"); //Used for Map
+		BufferedImage imgBossLarge = con.loadImage("BossLarge.png"); //Used for Boss Battle
+		BufferedImage imgMountainBattlefield = con.loadImage("MountainBattlefield.jpg"); //New background for boss battle
+
+		//"Level" up the hero
+		resetScreen(con);
+		con.setDrawColor(Color.WHITE);
+		con.drawString("Entered a new area. Gained 15 Max HP!", 200, 225);
+		con.repaint();
+		con.sleep(2000);
+		hero.setNewHP(hero.getCurrentHP() + 15);
+
+		//Reset to Hero's Starting Position:
+		hero.setNewRowPosition(19);
+		hero.setNewColPosition(9);
+
+		//Get rid of any text before running the Boss game loop:
+		resetScreen(con);
+
+		while (intLevel == 2) {
+			//Render Map with new entities:
+			renderMap(con, strBossMap, imgIce, imgFrozenTree, imgBuilding, imgWater, imgBossSmall, imgDoor);
+			displayHeroStats(con, hero);
+			displayHeroItems(con, hero.getItemList());
+			//Note that row = y-axis, col = x-axis
+			con.drawImage(hero.getHeroImage(), hero.getCurrentColPosition() * 30, hero.getCurrentRowPosition() * 30);
+			con.repaint();
+
+			//Get the current key being pressed and control movement of the hero with it:
+			char chrCurrentKey = con.getChar();
+
+			//Move the hero based on the realtime character input:
+			//Going Up: Check y-axis - 1 in canMove function
+			if (chrCurrentKey == 'w' && hero.canMove(hero.getCurrentRowPosition() - 1, hero.getCurrentColPosition(), strBossMap, "vertical")) {
+				hero.setNewRowPosition(hero.getCurrentRowPosition() - 1);
+			}
+
+			//Going Left: Check x-axis - 1 in canMove function
+			else if (chrCurrentKey == 'a' && hero.canMove(hero.getCurrentRowPosition(), hero.getCurrentColPosition() - 1, strBossMap, "horizontal")) {
+				hero.setNewColPosition(hero.getCurrentColPosition() - 1);
+			}
+
+			//Going Down: Check y-axis + 1 in canMove function
+			else if (chrCurrentKey == 's' && hero.canMove(hero.getCurrentRowPosition() + 1, hero.getCurrentColPosition(), strBossMap, "vertical")) {
+				hero.setNewRowPosition(hero.getCurrentRowPosition() + 1);
+			}
+
+			//Going Right: Check x-axis + 1 in canMove function
+			else if (chrCurrentKey == 'd' && hero.canMove(hero.getCurrentRowPosition(), hero.getCurrentColPosition() + 1, strBossMap, "horizontal")) {
+				hero.setNewColPosition(hero.getCurrentColPosition() + 1);
+			}
+
+			//Check for Boss Battle:
+			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("e")) {
+				Enemy boss = new Enemy(imgBossLarge, 150, 20, 15);
+
+				//Battle the Boss
+				Boss.bossListener(con, hero, boss, imgMountainBattlefield, imgHeroBattle);
+
+				//If victorious, show the final "Win Game" menu:
+				if (Boss.blnWonBattle == true) {
+					winGameMenu(con);
+				}
+			}
+
+			//Check for item pickups:
+			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("hp")) {
+				//What happens when Flask of Crimson Tears is acquired:
+				strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()] = "g";
+
+				//Notification message:
+				resetScreen(con);
+				con.setDrawColor(Color.WHITE);
+				con.drawString("Obtained 'Flask of Crimson Tears'. Gained 20 Max HP!", 100, 225);
+				con.repaint();
+				con.sleep(2000);
+				//Set the new HP, gaining 20 Max HP
+				hero.setNewHP(hero.getCurrentHP() + 20);
+				//Add the Crimson Flask to the list of items
+				for (int i = 0; i < hero.strItems.length; i++) {
+					if (hero.strItems[i] == null) {
+						hero.strItems[i] = "Crimson";
+						break;
+					}
+				}
+			}
+
+			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("fp")) {
+				//What happens when Flask of Cerulean Tears is acquired:
+				strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()] = "g";
+
+				//Notification message:
+				resetScreen(con);
+				con.setDrawColor(Color.WHITE);
+				con.drawString("Obtained 'Flask of Cerulean Tears'.", 180, 225);
+				con.drawString("Gained Full Energy for next battle!", 180, 250);
+				con.repaint();
+				con.sleep(2000);
+				//Set to true to set up Max Energy for the boss battle:
+				Boss.blnCeruleanAcquired = true;
+				//Add the Cerulean Flask to the list of items
+				for (int i = 0; i < hero.strItems.length; i++) {
+					if (hero.strItems[i] == null) {
+						hero.strItems[i] = "Cerulean";
+						break;
+					}
+				}
+			}
+
+			//If the player dies, the game is over. (Death when hero HP = 0):
+			if (hero.getCurrentHP() <= 0) {
+				deathMenu(con);
+				break;
+			}
 
 		}
 
@@ -193,6 +316,8 @@ public class Main {
 
 	//Function to render the map, adding the grass, tree, building, water blocks, etc:
 	public static void renderMap(Console con, String[][] strMap, BufferedImage imgGrass, BufferedImage imgTree, BufferedImage imgBuilding, BufferedImage imgWater, BufferedImage imgEnemy, BufferedImage imgDoor) {
+		BufferedImage imgCrimsonTears = con.loadImage("CrimsonTears.png");
+		BufferedImage imgCeruleanTears = con.loadImage("CeruleanTears.png");
 
 		//Initialize the map's UI with drawImage function:
 		for (int row = 0; row < 20; row++) {
@@ -218,6 +343,12 @@ public class Main {
 					case "d":
 						con.drawImage(imgDoor, col * 30, row * 30);
 						break;
+					case "hp":
+						con.drawImage(imgCrimsonTears, col * 30, row * 30);
+						break;
+					case "fp":
+						con.drawImage(imgCeruleanTears, col * 30, row * 30);
+						break;
 				}
 
 			}
@@ -235,42 +366,102 @@ public class Main {
 		con.drawString("Attack: "+objHero.getCurrentDMG(), 660, 50);
 		con.drawString("Defense: "+objHero.getCurrentDEF(), 660, 75);
 		con.repaint();
-
-		con.setDrawColor(Color.BLACK);
-		con.fillRect(650, 200, 250, 400);
-		con.repaint();
 	}
 
 	//Function to display the Hero's Current Item List
 	public static void displayHeroItems(Console con, String[] strItems) {
-		System.out.println("TEST: "+Arrays.deepToString(strItems));
 		con.setDrawColor(Color.WHITE);
 		con.drawString("HERO ITEMS: ", 650, 200);
+		con.repaint();
 
+		//Add items to the Array:
 		for (int i = 0; i < 5; i++) {
 			//If Array Index is null, stop printing items:
-			if (strItems[i] == null) {
-				break;
-			} else {
+			if (strItems[i] != null) {
 				//Add array data to the HUD:
-				con.drawString(String.valueOf(i+1)+". "+strItems[i], 660, 225+i*25);
+				con.drawString(String.valueOf(i + 1) + ". " + strItems[i], 660, 225 + i * 25);
+				con.repaint();
 			}
 		}
-
-		con.repaint();
-
-		con.setDrawColor(Color.BLACK);
-		con.fillRect(650, 200, 250, 400);
-		con.repaint();
 	}
 
 
 	//MENUS:
-	public static void startMenu(Console con) {
+	public static void helpMenu(Console con, BufferedImage imgWater, BufferedImage imgBuilding, BufferedImage imgTree, BufferedImage imgEnemy) {
+		//Function to display the Help Menu with how to play the game:
+
+		//Page 1, Discuss General Mechanics:
+		resetScreen(con);
+		con.println(" HELP (Page 1): ");
+		con.println();
+		con.println("- To beat the game, play until the end and beat the final boss!");
+		con.println("- There will be two levels in total.");
+		con.println("   - In the first level, collect three keys to advance in the game.");
+		con.println("   - In the second level, beat the boss to beat the game.");
+		con.println();
+	 	con.println("- Controls (WASD):");
+		con.println("   - 'W' = Move Up");
+		con.println("   - 'A' = Move Left");
+		con.println("   - 'S' = Move Down");
+		con.println("   - 'D' = Move Right");
+		con.println();
+		con.println("- Map Mechanics:");
+		con.println("   - Water Tiles will immediately kill you: ");
+		con.drawImage(imgWater, 520, 330); //Increments of 30
+		con.println("   - Building Tiles will heal you for +10HP: ");
+		con.drawImage(imgBuilding, 530, 360);
+		con.println("   - You cannot move through Tree Tiles: ");
+		con.drawImage(imgTree, 480, 380);
+		con.println("   - Enemy tiles will trigger a battle: ");
+		con.drawImage(imgEnemy, 465, 405);
+		con.println("     You can choose to escape for -10HP, or battle the enemy.");
+		con.println("- You may come across hidden items as you explore the area.");
+		con.println("  Pick them up to gain advantages that may help you progress!");
+		con.println("- If at any time in the game your HP becomes zero or below,");
+		con.println("  you will die");
+		con.println();
+		con.println("Press any key to continue");
+		con.getKey();
+
+		//Page 2: Discuss Specific Mechanics relating mostly to Battle functions:
+		resetScreen(con);
+		con.println("- Battle Mechanics:");
+		con.println("  - 'Kafka's Journey' is a Turn Based RPG.");
+		con.println("  - This means that the Hero and Enemy will take turns attacking");
+		con.println("    each other, until one eventually emerges victorious.");
+		con.println();
+		con.println("- Throughout the battle, you will come across different buttons");
+		con.println("  that allow you to unleash different abilities.");
+		con.println("- Event Listeners/Buttons will be marked with a bracket. ");
+		con.println("  You must DOUBLE-TAP the key to trigger an action:");
+		con.println("   - Ex: (B)attle -- Double-Press 'b' to initiate the battle");
+		con.println();
+		con.println("- In combat, 'Midnight Tumult' is your basic attack.");
+		con.println("  Use your basic to build-up Energy in the battle.");
+		con.println("- When you hit 100/Max Energy, you can unleash your ultimate.");
+		con.println("  This attack will deal extra damage and inflict Lightning DOT,");
+		con.println("  that deals additional damage based on 30% of the Enemy's Max HP.");
+		con.println();
+		con.println("- Some Other Status Effects: ");
+		con.println("  - Enraged: Increases both ATK and DEF by 3");
+		con.println("  - Freeze: Renders the opponent to unable to take their next turn");
+		con.println();
+		con.println("- Both the Hero and Enemy have stats that will determine how much");
+		con.println("  damage they deal and take.");
+		con.println();
+		con.println("Press any key to START GAME");
+		con.getKey();
+		con.clear();
+	}
+	public static void startMenu(Console con, BufferedImage imgWater, BufferedImage imgBuilding, BufferedImage imgTree, BufferedImage imgEnemy) {
+		//Game Title Screen:
 		con.drawString("Kafka's Journey", 300, 200);
 		con.drawString("Press any key to continue", 250, 300);
 		con.repaint();
 		con.getKey();
+
+		//Have the player go through the Help Menu before starting the game.
+		helpMenu(con, imgWater, imgBuilding, imgTree, imgEnemy);
 
 		//Add story:
 		resetScreen(con);
@@ -284,13 +475,14 @@ public class Main {
 		con.drawString("Kafka's mission now becomes clear: ", 210, 375);
 		con.drawString("Save the Xianzhou Luofu. Destroy Yanqing, the Ice Aeon.", 50, 400);
 		con.repaint();
-		con.sleep(5000);
+		con.sleep(3000);
 
 		con.drawString("Press any key to continue", 250, 450);
 		con.repaint();
 		con.getKey();
 	}
 
+	//Function to load death screen upon Player death, and cut the System/game
 	public static void deathMenu(Console con) {
 		//Load Death Screen:
 		BufferedImage imgDeath = con.loadImage("DeathImage.jpg");
@@ -298,6 +490,27 @@ public class Main {
 		con.drawImage(imgDeath, 100, 100);
 		con.repaint();
 		con.sleep(3000);
+		System.exit(0);
+	}
+
+	//Function to load the ending screen of the game:
+	public static void winGameMenu(Console con) {
+		resetScreen(con);
+		con.setDrawColor(Color.WHITE);
+		con.drawString("The ice begins to thaw.", 250, 200);
+		con.drawString("Kafka watches the remaining shards of Yanqing's ice swords,", 30, 225);
+		con.drawString("as they melt away into the river that begins to flow again.", 30, 250);
+		con.drawString("She looks out in the distance watching the Xianzhou", 97, 275);
+		con.drawString("continue to live in peace, ", 230, 300);
+		con.drawString("away from the terrors of the Ice Aeon.", 200, 325);
+		con.drawString("\"Just another day for the Stellaron Hunters,\" she says,", 50,350);
+		con.drawString("as she begins to set off for her next mission.", 125, 375);
+		con.repaint();
+		con.sleep(3000);
+
+		con.drawString("Press any key to end game", 250, 450);
+		con.repaint();
+		con.getKey();
 		System.exit(0);
 	}
 

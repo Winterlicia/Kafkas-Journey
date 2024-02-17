@@ -3,7 +3,7 @@ import java.awt.image.BufferedImage;
 public class Enemy {
     //Enemy's ATTRIBUTES: image and stats
     BufferedImage imgEnemy;
-    int intHP = 40;
+    int intHP;
     int intDMG = 10;
     int intDEF = 10;
 
@@ -15,7 +15,6 @@ public class Enemy {
         this.intDEF = intDEF;
     }
 
-    //NOTE: G&S FOR DMG, DEF MAY NOT BE NEEDED, DEPENDS IF ITEMS TO INCREASE THOSE ARE ADDED
     //Below are Getters and Setters of the object:
     // 1) Setters allow us to continuously update the Enemy's attributes.
     // 2) Getters allow us to take the Enemy's current attributes to control the battle engine.
@@ -27,7 +26,6 @@ public class Enemy {
         this.imgEnemy = imgEnemy;
     }
 
-    //Important for healing in buildings and taking damage:
     public int getCurrentHP() {
         return this.intHP;
     }

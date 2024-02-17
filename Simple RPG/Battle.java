@@ -40,10 +40,11 @@ public class Battle {
         con.setDrawColor(Color.WHITE);
         con.drawRect(25, 400, 200, 100);
         con.drawString("(B)attle", 75, 425);
-        //con.setDrawFont(con.loadFont("Oswald-Light.ttf", 40));
+
+        //Only draw the Retreat button for a normal enemy battle:
         con.drawRect(375, 400, 200, 100);
         con.drawString("(R)etreat", 425, 425);
-        //con.setDrawFont(con.loadFont("Oswald-Light.ttf", 40));
+
         con.repaint();
 
         //Battle Engine Game Loop (for normal enemy):
@@ -73,17 +74,16 @@ public class Battle {
                 Main.displayHeroStats(con, hero);
                 displayEnemyStats(con, enemy);
 
+                //Initialize new variables specific for the battle:
                 int intHeroEnergy = 0;
                 int intTurn = 0;
                 final double dblCritRate = 0.3;
                 final double dblHeroCritDMG = 0.7;
                 final double dblEnemyCritDMG = 0.6;
+                boolean blnHasLightningDOT = false;
 
                 //Display Hero's skill and ultimate for the battle:
                 renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
-
-                //Initialize new variables specific for the battle:
-                boolean blnHasLightningDOT = false;
 
                 //Battle Turn Loop:
                 while (true) {
@@ -95,6 +95,11 @@ public class Battle {
                         if (hero.getCurrentHP() <= 0) {
                             Main.deathMenu(con);
                             break;
+                        }
+
+                        //Cap the Hero's Max Energy at 100:
+                        if (intHeroEnergy >= 100) {
+                            intHeroEnergy = 100;
                         }
 
                         //Get the user's input for a skill or ult (only when Hero has 100 Energy):
@@ -122,7 +127,7 @@ public class Battle {
                                 con.sleep(100);
                                 //'Erase' the screen using black rectangle
                                 con.setDrawColor(Color.BLACK);
-                                con.fillRect(0, 0, 960, 540);
+                                con.fillRect(0, 0, 960, 600);
                                 //Rinse and repeat:
                                 intAnimationCount++;
                             }
@@ -140,7 +145,7 @@ public class Battle {
                                 con.sleep(100);
                                 //'Erase' the screen using black rectangle
                                 con.setDrawColor(Color.BLACK);
-                                con.fillRect(0, 0, 960, 540);
+                                con.fillRect(0, 0, 960, 600);
                                 //Rinse and repeat:
                                 intAnimationCount++;
                             }
@@ -176,11 +181,11 @@ public class Battle {
                         }
 
                         //Animation and Stats of Hero Ultimate Attack:
-                        else if (chrChoice == 't' || intHeroEnergy == 100) { //Change condition later after testing
+                        else if (chrChoice == 't' && intHeroEnergy == 100) { //Change condition later after testing
 
                             //Animate ultimate: Make Kafka's symbol appear and drop lightning
                             int intAnimationCount = 0; //Restart Count
-                            while (intAnimationCount < 30) {
+                            while (intAnimationCount < 25) {
                                 //Keep regular battlefield entities:
                                 con.drawImage(imgBattlefield, 0, 0);
                                 con.drawImage(imgHero, 50, 100);
@@ -195,7 +200,7 @@ public class Battle {
                                 con.sleep(100);
                                 //'Erase' the screen using black rectangle
                                 con.setDrawColor(Color.BLACK);
-                                con.fillRect(0, 0, 960, 540);
+                                con.fillRect(0, 0, 960, 600);
                                 //Rinse and repeat:
                                 intAnimationCount++;
                             }
@@ -246,45 +251,40 @@ public class Battle {
 
                     } else {
                         //Check for DOT, take extra DMG at beginning of the Enemy's turn if there is:
-                        if (blnHasLightningDOT == true) {
-                            con.drawImage(imgBattlefield, 0, 0);
-                            con.drawImage(imgHero, 50, 100);
-                            con.drawImage(enemy.getEnemyImage(), 450, 100);
-                            con.setDrawColor(Color.WHITE);
-                            con.drawString("The enemy takes " + String.valueOf(enemy.getCurrentHP() - (int)(0.5 * hero.getCurrentDMG())) + " damage from 'Lightning DOT'!", 100, 140);
-                            //DOT deals 0.5 of Hero's ATK/DMG, ignores enemy DEF:
-                            enemy.setNewHP(enemy.getCurrentHP() - (int)(0.5 * hero.getCurrentDMG()));
-                            con.repaint();
-                            con.sleep(4000);
+                        checkDOT(con, blnHasLightningDOT, imgBattlefield, imgHero, enemy, hero, 45);
+                        blnHasLightningDOT = false; //Set back to "No DOTs"
+                        //Reset screen, show new HP as a result of DOT:
+                        Main.resetScreen(con);
+                        renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
+                        Main.displayHeroStats(con, hero);
+                        displayEnemyStats(con, enemy);
+                        con.sleep(1000);
 
-                            blnHasLightningDOT = false; //Set back to "No DOTs"
-
-                            //Check for possible Enemy death from DOT:
-                            if (enemy.getCurrentHP() <= 0) {
-                                //Update enemies defeated:
-                                hero.setNewEnemiesDefeated(hero.getEnemiesDefeated() + 1);
-                                con.sleep(500);
-                                winScreen(con, hero);
-                                break;
-                            }
+                        //Check for possible Enemy death from DOT:
+                        if (enemy.getCurrentHP() <= 0) {
+                            //Update enemies defeated:
+                            hero.setNewEnemiesDefeated(hero.getEnemiesDefeated() + 1);
+                            con.sleep(500);
+                            winScreen(con, hero);
+                            break;
                         }
 
                         //What happens when it is the enemy's turn:
                         int intAnimationCount = 0;
-                        while (intAnimationCount < 60) { //Hero Size is 138x200 pixels
+                        while (intAnimationCount < 50) { //Hero Size is 138x200 pixels
                             //Keep regular battlefield entities:
                             con.drawImage(imgBattlefield, 0, 0);
                             con.drawImage(imgHero, 50, 100);
                             con.drawImage(enemy.getEnemyImage(), 450, 100);
-                            con.drawImage(imgSlashWave, 380 - 4 * intAnimationCount, 160);
+                            con.drawImage(imgSlashWave, 380 - 5 * intAnimationCount, 160);
                             con.setDrawColor(Color.WHITE);
-                            con.drawString("Cloud Knight Patroller used Slash Wave!", 30, 415);
+                            con.drawString("Cloud Knight Patroller used 'Slash Wave'!", 30, 415);
                             con.repaint();
                             //Show the entities on screen for a little while
                             con.sleep(100);
                             //'Erase' the screen using black rectangle
                             con.setDrawColor(Color.BLACK);
-                            con.fillRect(0, 0, 960, 540);
+                            con.fillRect(0, 0, 960, 600);
                             //Rinse and repeat:
                             intAnimationCount++;
                         }
@@ -307,11 +307,11 @@ public class Battle {
                         con.sleep(1000);
 
                         //Apply the Attack Formula on the Hero now:
-                        hero.setNewHP(hero.getCurrentHP() - intDMGDealt + (int)(0.5 * enemy.getCurrentDEF()));
+                        hero.setNewHP(hero.getCurrentHP() - intDMGDealt + (int)(0.5 * hero.getCurrentDEF()));
 
                         //Just to spice things up: Make the Enemy a bit stronger after every turn the enemy makes:
                         renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
-                        con.drawString("The enemy gained 1 more stack of 'Enraged'!", 220, 140);
+                        con.drawString("The enemy gained 1 more stack of 'Enraged'!", 100, 75);
                         enemy.setNewDMG(enemy.getCurrentDMG() + 3);
                         enemy.setNewDEF(enemy.getCurrentDEF() + 3);
                         con.repaint();
@@ -328,18 +328,11 @@ public class Battle {
                     }
                 }
 
-
-                
                 if (blnWonBattle == true) {
                     break;
                 }
                 
             }
-        }
-
-        //Battle Turn Loop (for Boss Battle): - Boss HP will be set to 100, use this to get the correct loop.
-        while (enemy.getCurrentHP() == 100) {
-
         }
     }
     
@@ -361,7 +354,15 @@ public class Battle {
         con.setDrawColor(Color.WHITE);
         con.drawImage(imgBattlefield, 0, 0);
         con.drawImage(imgHero, 50, 100);
-        con.drawImage(enemy.getEnemyImage(), 450, 100);
+        //Enemy x,y-coordinates change based on normal enemy or boss:
+        if (enemy.getCurrentDMG() != 20) {
+            //Note that the normal enemy's DMG will never hit 20 -- since it goes up by increments of two from Outrage stacks,
+            //enemy's DMG will be 10, 13, 16, 19, 22 != 20
+            con.drawImage(enemy.getEnemyImage(), 450, 100);
+        } else {
+            //For the Boss:
+            con.drawImage(enemy.getEnemyImage(), 425, 75);
+        }
         con.repaint();
 
         //Set the Hero's Basic Attack:
@@ -380,6 +381,26 @@ public class Battle {
         con.drawString("Energy: ", 393, 475);
         con.drawString(String.valueOf(intHeroEnergy)+"/100", 400, 500);
         con.repaint();
+    }
+
+    //Function to check for Lightning DOT Inflicted:
+    public static void checkDOT(Console con, boolean blnHasLightningDOT, BufferedImage imgBattlefield, BufferedImage imgHero, Enemy enemy, Hero hero, int intEnemyMaxHP) {
+        if (blnHasLightningDOT == true) {
+            con.drawImage(imgBattlefield, 0, 0);
+            con.drawImage(imgHero, 50, 100);
+            if (enemy.getCurrentDMG() != 20) { //Normal Enemy
+                con.drawImage(enemy.getEnemyImage(), 450, 100);
+                con.setDrawColor(Color.WHITE);
+            } else { //Boss
+                con.drawImage(enemy.getEnemyImage(), 425, 75);
+                con.setDrawColor(Color.BLACK);
+            }
+            con.drawString("The enemy takes " + String.valueOf((int)(0.3 * intEnemyMaxHP)) + " damage from 'Lightning DOT'!", 100, 140);
+            //DOT deals 30% of the enemy's Max HP, ignores enemy DEF:
+            enemy.setNewHP(enemy.getCurrentHP() - (int) (0.3 * intEnemyMaxHP));
+            con.repaint();
+            con.sleep(2500);
+        }
     }
 
     //Function for the Win Screen, when the hero wins a battle:
@@ -424,13 +445,13 @@ public class Battle {
             //Add a weapon item at 4 enemies defeated:
             hero.setNewItem("Shield");
             con.drawString("Obtained 'Shield'!", 300, 225);
-            con.drawImage(con.loadImage("Shield.png"), 325, 260);
+            con.drawImage(con.loadImage("Shield.png"), 300, 260);
             con.repaint();
             //Show for a little while:
             con.sleep(2500);
 
             con.drawString("Obtained 'Shield'!", 300, 225);
-            con.drawImage(con.loadImage("Shield.png"), 325, 250);
+            con.drawImage(con.loadImage("Shield.png"), 300, 260);
             con.drawString("Press any key to continue", 250, 500);
             con.repaint();
 

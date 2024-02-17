@@ -23,8 +23,7 @@ public class Hero {
 		this.intEnemiesDefeated = intEnemiesDefeated;
 		this.strItems = strItems;
 	}
-	
-	//NOTE: G&S FOR DMG, DEF MAY NOT BE NEEDED, DEPENDS IF ITEMS TO INCREASE THOSE ARE ADDED
+
 	//Below are Getters and Setters of the object:
 	// 1) Setters allow us to continuously update the Hero's attributes.
 	// 2) Getters allow us to take the Hero's current attributes to control the game's mechanics.
