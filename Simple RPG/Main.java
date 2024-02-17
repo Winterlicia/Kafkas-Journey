@@ -170,8 +170,8 @@ public class Main {
 		String[][] strBossMap = new String[20][20];
 		TextInputFile bossmap = new TextInputFile("bossmap.csv");
 		strBossMap = loadMap(bossmap);
-		System.out.println(Arrays.deepToString(strBossMap));
 
+		//Initialize new images:
 		BufferedImage imgIce = con.loadImage("Ice.png"); //The ice will become the grass
 		BufferedImage imgFrozenTree = con.loadImage("FrozenTree.png");
 		BufferedImage imgBossSmall = con.loadImage("BossSmall.png"); //Used for Map
@@ -306,7 +306,6 @@ public class Main {
 
 			for (int col = 0; col < 20; col++) {
 				strMap[row][col] = strSplit[col];
-				System.out.println(Arrays.deepToString(strMap));
 			}
 		}
 
