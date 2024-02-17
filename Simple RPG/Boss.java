@@ -174,6 +174,7 @@ public class Boss {
                                     con.setDrawColor(Color.BLACK);
                                     con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                                 } else {
+                                    //Normal damage:
                                     intDMGDealt = hero.getCurrentDMG();
                                     Battle.renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                     con.setDrawColor(Color.BLACK);
@@ -231,6 +232,7 @@ public class Boss {
                                     con.setDrawColor(Color.BLACK);
                                     con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                                 } else {
+                                    //Normal damage:
                                     intDMGDealt = (int) (hero.getCurrentDMG() * 1.25);
                                     Battle.renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                     con.setDrawColor(Color.BLACK);
@@ -320,7 +322,8 @@ public class Boss {
                                 con.setDrawColor(Color.BLACK);
                                 con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                             } else {
-                                intDMGDealt = hero.getCurrentDMG();
+                                //Normal damage:
+                                intDMGDealt = enemy.getCurrentDMG();
                                 Battle.renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                 con.setDrawColor(Color.BLACK);
                                 con.drawString("Damage: " + String.valueOf(intDMGDealt), 300, 120);
@@ -383,7 +386,8 @@ public class Boss {
                                 con.setDrawColor(Color.BLACK);
                                 con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                             } else {
-                                intDMGDealt = hero.getCurrentDMG();
+                                //Normal damage:
+                                intDMGDealt = enemy.getCurrentDMG();
                                 Battle.renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                 con.setDrawColor(Color.BLACK);
                                 con.drawString("Damage: " + String.valueOf(intDMGDealt), 300, 120);
