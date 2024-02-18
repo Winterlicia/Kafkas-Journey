@@ -1,7 +1,6 @@
 import arc.*;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.awt.image.BufferedImage;
 
 // IMPORTANT NOTE: ALL EVENT LISTENERS REQUIRE YOU TO DOUBLE TAP THE KEY ON YOUR KEYBOARD //
@@ -260,8 +259,6 @@ public class Main {
 						break;
 					}
 				}
-				//Reset Screen:
-				resetScreen(con);
 			}
 
 			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("fp")) {
@@ -284,8 +281,6 @@ public class Main {
 						break;
 					}
 				}
-				//Reset Screen:
-				resetScreen(con);
 			}
 
 			//If the player dies, the game is over. (Death when hero HP = 0):

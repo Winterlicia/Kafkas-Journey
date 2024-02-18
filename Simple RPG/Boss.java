@@ -29,8 +29,14 @@ public class Boss {
         int intTurn = 0;
         int intHeroEnergy = 0;
         int intBossEnergy = 0;
+
+        //Weapon Images:
         BufferedImage imgFrozenSwordHorizontal = con.loadImage("FrozenSwordHorizontal.png");
         BufferedImage imgFrozenSwordVertical = con.loadImage("FrozenSwordVertical.png");
+        BufferedImage imgKatana = con.loadImage("Katana.png");
+        BufferedImage imgSymbol = con.loadImage("Symbol.png");
+        BufferedImage imgLightning = con.loadImage("Lightning.png");
+        BufferedImage imgGlacier = con.loadImage("Glacier.png");
 
         //Clear the console:
         con.setDrawColor(Color.BLACK);
@@ -126,7 +132,6 @@ public class Boss {
 
                             //Animation and Stats of Hero Basic Attack:
                             if (chrChoice == 'm') {
-                                BufferedImage imgKatana = con.loadImage("Katana.png");
 
                                 //Animate sword slashing vertically:
                                 int intAnimationCount = 0;
@@ -198,8 +203,6 @@ public class Boss {
 
                             //Animation and Stats of Hero Ultimate Attack:
                             else if (chrChoice == 't' && intHeroEnergy == 100) { //Change condition later after testing
-                                BufferedImage imgSymbol = con.loadImage("Symbol.png");
-                                BufferedImage imgLightning = con.loadImage("Lightning.png");
 
                                 //Animate ultimate: Make Kafka's symbol appear and drop lightning
                                 int intAnimationCount = 0; //Restart Count
@@ -345,7 +348,6 @@ public class Boss {
 
                         //Add Boss Ultimate Animation (intEnemyEnergy = 150)
                         else if (intBossEnergy == 150) {
-                            BufferedImage imgGlacier = con.loadImage("Glacier.png");
 
                             int intAnimationCount = 0;
                             while (intAnimationCount < 30) {
