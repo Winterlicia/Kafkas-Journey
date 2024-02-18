@@ -28,7 +28,7 @@ public class Battle {
         con.setDrawColor(Color.WHITE);
         con.drawRect(25, 400, 200, 100);
         con.drawString("(B)attle", 75, 425);
-        
+
         con.drawRect(375, 400, 200, 100);
         con.drawString("(R)etreat", 425, 425);
 
@@ -102,7 +102,7 @@ public class Battle {
 
                         //Animation and Stats of Hero Basic Attack:
                         if (chrChoice == 'm') {
-                            
+
                             //Animate sword slashing vertically:
                             int intAnimationCount = 0;
                             while (intAnimationCount < 25) { //Enemy Size is 200x200 pixels
@@ -204,7 +204,7 @@ public class Battle {
                                 con.setDrawColor(Color.WHITE);
                                 con.drawString(String.valueOf(intDMGDealt) + " Critical Hit!", 270, 120);
                             } else {
-                               //Normal damage:
+                                //Normal damage:
                                 intDMGDealt = (int) (hero.getCurrentDMG() * 1.25);
                                 renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                                 con.setDrawColor(Color.WHITE);
@@ -303,7 +303,9 @@ public class Battle {
 
                         //Just to spice things up: Make the Enemy a bit stronger after every turn the enemy makes:
                         renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
+                        con.setDrawColor(Color.WHITE);
                         con.drawString("The enemy gained 1 more stack of 'Enraged'!", 100, 75);
+                        //'Enraged' stacks add 3 points to Enemy's DMG and DEF:
                         enemy.setNewDMG(enemy.getCurrentDMG() + 3);
                         enemy.setNewDEF(enemy.getCurrentDEF() + 3);
                         con.repaint();
@@ -323,11 +325,11 @@ public class Battle {
                 if (blnWonBattle == true) {
                     break;
                 }
-                
+
             }
         }
     }
-    
+
     public static void displayEnemyStats(Console con, Enemy objEnemy) {
         //Write the HUD Enemy Stats (below the Player stats):
         con.setDrawColor(Color.WHITE);
@@ -348,7 +350,7 @@ public class Battle {
         con.drawImage(imgHero, 50, 100);
         //Enemy x,y-coordinates change based on normal enemy or boss:
         if (enemy.getCurrentDMG() != 20) {
-            //Note that the normal enemy's DMG will never hit 20 -- since it goes up by increments of three from Outrage stacks,
+            //Note that the normal enemy's DMG will never hit 20 -- since it goes up by increments of three from Enraged stacks,
             //enemy's DMG will be 10, 13, 16, 19, 22 != 20
             con.drawImage(enemy.getEnemyImage(), 450, 100);
         } else {
@@ -387,7 +389,7 @@ public class Battle {
                 con.drawImage(enemy.getEnemyImage(), 425, 75);
                 con.setDrawColor(Color.BLACK);
             }
-            con.drawString("The enemy takes " + String.valueOf((int)(0.3 * intEnemyMaxHP)) + " damage from 'Lightning DOT'!", 100, 140);
+            con.drawString("The enemy takes " + String.valueOf((int)(0.3 * intEnemyMaxHP)) + " damage from 'Lightning DOT'!", 100, 75);
             //DOT deals 30% of the enemy's Max HP, ignores enemy DEF:
             enemy.setNewHP(enemy.getCurrentHP() - (int) (0.3 * intEnemyMaxHP));
             con.repaint();

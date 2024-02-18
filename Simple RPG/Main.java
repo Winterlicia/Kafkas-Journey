@@ -164,7 +164,7 @@ public class Main {
 
 		}
 
-	//Boss Map Game Loop:
+		//Boss Map Game Loop:
 
 		//Initialize required variables:
 		String[][] strBossMap = new String[20][20];
@@ -195,6 +195,7 @@ public class Main {
 
 		while (intLevel == 2) {
 			//Render Map with new entities:
+			resetScreen(con);
 			renderMap(con, strBossMap, imgIce, imgFrozenTree, imgBuilding, imgWater, imgBossSmall, imgDoor);
 			displayHeroStats(con, hero);
 			displayHeroItems(con, hero.getItemList());
@@ -259,6 +260,8 @@ public class Main {
 						break;
 					}
 				}
+				//Reset Screen:
+				resetScreen(con);
 			}
 
 			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("fp")) {
@@ -281,6 +284,8 @@ public class Main {
 						break;
 					}
 				}
+				//Reset Screen:
+				resetScreen(con);
 			}
 
 			//If the player dies, the game is over. (Death when hero HP = 0):
@@ -391,14 +396,14 @@ public class Main {
 
 		//Page 1, Discuss General Mechanics:
 		resetScreen(con);
-		con.println(" HELP (Page 1): ");
+		con.println(" HELP / HOW TO PLAY: ");
 		con.println();
 		con.println("- To beat the game, play until the end and beat the final boss!");
 		con.println("- There will be two levels in total.");
 		con.println("   - In the first level, collect three keys to advance in the game.");
 		con.println("   - In the second level, beat the boss to beat the game.");
 		con.println();
-	 	con.println("- Controls (WASD):");
+		con.println("- Controls (WASD):");
 		con.println("   - 'W' = Move Up");
 		con.println("   - 'A' = Move Left");
 		con.println("   - 'S' = Move Down");
@@ -501,15 +506,27 @@ public class Main {
 		con.drawString("as they melt away into the river that begins to flow again.", 30, 250);
 		con.drawString("She looks out in the distance watching the Xianzhou", 97, 275);
 		con.drawString("continue to live in peace, ", 230, 300);
-		con.drawString("away from the terrors of the Ice Aeon.", 200, 325);
+		con.drawString("away from the terrors of the Ice Aeon.", 175, 325);
 		con.drawString("\"Just another day for the Stellaron Hunters,\" she says,", 50,350);
 		con.drawString("as she begins to set off for her next mission.", 125, 375);
 		con.repaint();
 		con.sleep(3000);
 
-		con.drawString("Press any key to end game", 250, 450);
+		con.drawString("Press any key to END GAME", 250, 450);
 		con.repaint();
 		con.getKey();
+
+		//Return to main screen and automatically close the game after 3 seconds:
+		resetScreen(con);
+		for (int i = 3; i >= 1; i--) {
+			con.setDrawColor(Color.WHITE);
+			con.drawString("Kafka's Journey", 300, 200);
+			con.drawString("Closing in "+String.valueOf(i), 315, 225);
+			con.repaint();
+			con.sleep(1000);
+			con.setDrawColor(Color.BLACK);
+			con.fillRect(0, 0, 960, 600);
+		}
 		System.exit(0);
 	}
 

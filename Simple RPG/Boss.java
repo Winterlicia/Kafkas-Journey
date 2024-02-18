@@ -7,7 +7,7 @@ public class Boss {
     //"Static-Global" variables, accessible in different classes
     public static boolean blnWonBattle = false;
     public static boolean blnCeruleanAcquired = false;
-    
+
     public static void bossListener(Console con, Hero hero, Enemy enemy, BufferedImage imgBattlefield, BufferedImage imgHero) {
         //Cutscene:
         Main.resetScreen(con);
@@ -429,5 +429,5 @@ public class Boss {
 
         }
     }
-    
+
 }
