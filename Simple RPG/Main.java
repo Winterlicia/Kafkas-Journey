@@ -125,7 +125,7 @@ public class Main {
 				//Rearrange item list now that Keys are gone:
 				hero.strItems[0] = "Sword";
 				hero.strItems[1] = "Shield";
-				for (int i = 2; i < 4; i++) {
+				for (int i = 2; i <= 4; i++) {
 					hero.strItems[i] = null;
 				}
 
@@ -228,7 +228,7 @@ public class Main {
 
 			//Check for Boss Battle:
 			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("e")) {
-				Enemy boss = new Enemy(imgBossLarge, 150, 20, 15);
+				Enemy boss = new Enemy(imgBossLarge, 200, 20, 15);
 
 				//Battle the Boss
 				Boss.bossListener(con, hero, boss, imgMountainBattlefield, imgHeroBattle);
@@ -432,8 +432,8 @@ public class Main {
 		con.println("- Throughout the battle, you will come across different buttons");
 		con.println("  that allow you to unleash different abilities.");
 		con.println("- Event Listeners/Buttons will be marked with a bracket. ");
-		con.println("  You must DOUBLE-TAP the key to trigger an action:");
-		con.println("   - Ex: (B)attle -- Double-Press 'b' to initiate the battle");
+		con.println("  You must TAP the key to trigger an action:");
+		con.println("   - Ex: (B)attle -- PRESS 'b' to initiate the battle");
 		con.println();
 		con.println("- In combat, 'Midnight Tumult' is your basic attack.");
 		con.println("  Use your basic to build-up Energy in the battle.");

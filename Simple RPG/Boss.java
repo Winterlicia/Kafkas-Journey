@@ -61,7 +61,7 @@ public class Boss {
         //Battle Turn Loop (for Boss Battle):.
         while (true) {
             //Make the player choose 'b' (Battle)
-            char chrSelect = con.getChar();
+            char chrSelect = ' ';
             while (blnValidSelection != true) {
                 chrSelect = con.getChar();
                 if (chrSelect == 'b') {
@@ -122,7 +122,7 @@ public class Boss {
 
                             //Get the user's input for a skill or ult (only when Hero has 100 Energy):
                             blnValidSelection = false;
-                            char chrChoice = con.getChar();
+                            char chrChoice = ' ';
                             while (blnValidSelection != true) {
                                 chrChoice = con.getChar();
                                 if (chrChoice == 'm' || (chrChoice == 't' && intHeroEnergy == 100)) {
@@ -193,6 +193,11 @@ public class Boss {
 
                                 //Accumulate Energy for the Ultimate:
                                 intHeroEnergy += 50;
+
+                                //Cap the Hero's Max Energy at 100:
+                                if (intHeroEnergy >= 100) {
+                                    intHeroEnergy = 100;
+                                }
 
                                 //Display new stats and return to the previous screen at end of turn:
                                 Main.resetScreen(con);

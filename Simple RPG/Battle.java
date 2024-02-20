@@ -37,7 +37,7 @@ public class Battle {
         //Battle Engine Game Loop (for normal enemy):
         while (true) {
             //Ensure that the player's selection is valid:
-            char chrChoice = con.getChar();
+            char chrChoice = ' ';
             while (blnValidSelection != true) {
                 chrChoice = con.getChar();
                 if (chrChoice == 'b' || chrChoice == 'r') {
@@ -92,7 +92,7 @@ public class Battle {
 
                         //Get the user's input for a skill or ult (only when Hero has 100 Energy):
                         blnValidSelection = false;
-                        chrChoice = con.getChar();
+                        chrChoice = ' ';
                         while (blnValidSelection != true) {
                             chrChoice = con.getChar();
                             if (chrChoice == 'm' || (chrChoice == 't' && intHeroEnergy == 100)) {
@@ -162,6 +162,11 @@ public class Battle {
 
                             //Accumulate Energy for the Ultimate:
                             intHeroEnergy += 50;
+
+                            //Cap the Hero's Max Energy at 100:
+                            if (intHeroEnergy >= 100) {
+                                intHeroEnergy = 100;
+                            }
 
                             //Display new stats and return to the previous screen at end of turn:
                             Main.resetScreen(con);
