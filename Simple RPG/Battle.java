@@ -394,7 +394,7 @@ public class Battle {
                 con.drawImage(enemy.getEnemyImage(), 425, 75);
                 con.setDrawColor(Color.BLACK);
             }
-            con.drawString("The enemy takes " + String.valueOf((int)(0.3 * intEnemyMaxHP)) + " damage from 'Lightning DOT'!", 100, 75);
+            con.drawString("The enemy takes " + String.valueOf((int)(0.3 * intEnemyMaxHP)) + " damage from 'Lightning DOT'!", 75, 75);
             //DOT deals 30% of the enemy's Max HP, ignores enemy DEF:
             enemy.setNewHP(enemy.getCurrentHP() - (int) (0.3 * intEnemyMaxHP));
             con.repaint();

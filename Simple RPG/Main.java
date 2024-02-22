@@ -228,7 +228,7 @@ public class Main {
 
 			//Check for Boss Battle:
 			if (strBossMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("e")) {
-				Enemy boss = new Enemy(imgBossLarge, 200, 20, 15);
+				Enemy boss = new Enemy(imgBossLarge, 175, 20, 15);
 
 				//Battle the Boss
 				Boss.bossListener(con, hero, boss, imgMountainBattlefield, imgHeroBattle);
@@ -353,7 +353,6 @@ public class Main {
 			}
 		}
 		con.repaint();
-
 	}
 
 	//Function to display the Hero's stats:

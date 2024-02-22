@@ -101,7 +101,7 @@ public class Hero {
 		}
 		
 		//Prevent the player from moving into a tree:
-		if (strCheckMap[intRow][intCol].equals("t")) {
+		else if (strCheckMap[intRow][intCol].equals("t")) {
 			return false;
 		}
 		
