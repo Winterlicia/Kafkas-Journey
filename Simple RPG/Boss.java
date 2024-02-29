@@ -135,12 +135,12 @@ public class Boss {
 
                                 //Animate sword slashing vertically:
                                 int intAnimationCount = 0;
-                                while (intAnimationCount < 25) { //Enemy Size is 200x200 pixels
+                                while (intAnimationCount < 20) { //Enemy Size is 200x200 pixels
                                     //Keep regular battlefield entities:
                                     con.drawImage(imgBattlefield, 0, 0);
                                     con.drawImage(imgHero, 50, 100);
                                     con.drawImage(enemy.getEnemyImage(), 425, 75);
-                                    con.drawImage(imgKatana, 420, 80 + 4 * intAnimationCount);
+                                    con.drawImage(imgKatana, 420, 80 + 5 * intAnimationCount);
                                     con.repaint();
                                     //Show the entities on screen for a little while
                                     con.sleep(100);
@@ -153,13 +153,13 @@ public class Boss {
 
                                 //Animate Sword Stabbing the Enemy:
                                 intAnimationCount = 0; //Restart Count
-                                while (intAnimationCount < 25) {
+                                while (intAnimationCount < 20) {
                                     //Keep regular battlefield entities:
                                     con.drawImage(imgBattlefield, 0, 0);
                                     con.drawImage(imgHero, 50, 100);
                                     con.drawImage(enemy.getEnemyImage(), 425, 75);
 
-                                    con.drawImage(imgKatana, 340 + 4 * intAnimationCount, 160);
+                                    con.drawImage(imgKatana, 340 + 5 * intAnimationCount, 160);
                                     con.repaint();
                                     //Show the entities on screen for a little while
                                     con.sleep(100);
@@ -303,13 +303,13 @@ public class Boss {
                         if (intBossEnergy != 150) {
 
                             int intAnimationCount = 0;
-                            while (intAnimationCount < 50) {
+                            while (intAnimationCount < 40) {
                                 //Keep regular battlefield entities:
                                 con.drawImage(imgBattlefield, 0, 0);
                                 con.drawImage(imgHero, 50, 100);
                                 con.drawImage(enemy.getEnemyImage(), 425, 75);
 
-                                con.drawImage(imgFrozenSwordHorizontal, 380 - 5 * intAnimationCount, 160);
+                                con.drawImage(imgFrozenSwordHorizontal, 380 - (int)(6.25 * intAnimationCount), 160);
                                 con.setDrawColor(Color.WHITE);
                                 con.drawString("Yanqing used 'Frost Thorn'!", 60, 415);
                                 con.repaint();
@@ -355,14 +355,14 @@ public class Boss {
                         else if (intBossEnergy == 150) {
 
                             int intAnimationCount = 0;
-                            while (intAnimationCount < 30) {
+                            while (intAnimationCount < 20) {
                                 //Keep regular battlefield entities:
                                 con.drawImage(imgBattlefield, 0, 0);
                                 con.drawImage(imgHero, 50, 100);
                                 con.drawImage(enemy.getEnemyImage(), 425, 75);
 
                                 //Animate the dropping sword
-                                con.drawImage(imgFrozenSwordVertical, 100, -80 + 5 * intAnimationCount);
+                                con.drawImage(imgFrozenSwordVertical, 100, -80 + (int)(7.5* intAnimationCount));
                                 con.setDrawColor(Color.WHITE);
                                 con.drawString("Yanqing used 'Amidst the One True Sword'!", 30, 415);
                                 con.repaint();

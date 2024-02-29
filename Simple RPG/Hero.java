@@ -94,9 +94,9 @@ public class Hero {
 	public boolean canMove(int intRow, int intCol, String[][] strCheckMap, String strDirection) {
 		
 		//Prevent the player from going out of boundaries:
-		if ((intRow+1 >= 20 || intRow-1 <= -1) && strDirection.equals("vertical")) {
+		if ((intRow >= 20 || intRow <= -1) && strDirection.equals("vertical")) {
 			return false;
-		} else if ((intCol + 1 >= 20 || intCol-1 <= -1) && strDirection.equals("horizontal")) {
+		} else if ((intCol >= 20 || intCol <= -1) && strDirection.equals("horizontal")) {
 			return false;
 		}
 		

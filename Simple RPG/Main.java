@@ -11,7 +11,7 @@ public class Main {
 
 		//Initialize the map(s)
 		String[][] strMap = new String[20][20];
-		TextInputFile map = new TextInputFile("map.csv");
+		TextInputFile map;
 		int intLevel = 1; //Level 1 = Activate Regular Map, Level 2 = Activate Boss Map
 
 		//Initialize the images to be used:
@@ -25,9 +25,19 @@ public class Main {
 		BufferedImage imgHeroBattle = con.loadImage("HeroBattle.png");
 		BufferedImage imgEnemyBattle = con.loadImage("EnemyLarge.png");
 		BufferedImage imgDoor = con.loadImage("Door.png");
+		BufferedImage imgMap1 = con.loadImage("map1.png");
+		BufferedImage imgMap2 = con.loadImage("map2.png");
 
 		//Initiate the Start Menu at the beginning:
 		startMenu(con, imgWater, imgBuilding, imgTree, imgEnemy);
+		char chrMap = returnMapChoice(con, imgMap1, imgMap2);
+
+		//Get the map based on the chosen map:
+		if (chrMap == '1') {
+			map = new TextInputFile("map.csv");
+		} else {
+			map = new TextInputFile("map2.csv");
+		}
 
 		//Load the map using the functions:
 		strMap = loadMap(map);
@@ -451,6 +461,8 @@ public class Main {
 		con.getKey();
 		con.clear();
 	}
+
+	//Menu that shows up when you initially start the game:
 	public static void startMenu(Console con, BufferedImage imgWater, BufferedImage imgBuilding, BufferedImage imgTree, BufferedImage imgEnemy) {
 		//Game Title Screen:
 		con.drawString("Kafka's Journey", 300, 200);
@@ -478,6 +490,35 @@ public class Main {
 		con.drawString("Press any key to continue", 250, 450);
 		con.repaint();
 		con.getKey();
+	}
+
+	//Function to allow the user to choose a map, return a number that decides this:
+	public static char returnMapChoice(Console con, BufferedImage imgMap1, BufferedImage imgMap2) {
+		resetScreen(con);
+		con.drawString("CHOOSE A GAME MAP: ",50, 450);
+		con.drawImage(imgMap1, 70, 100);
+		con.drawImage(imgMap2, 470, 100);
+
+		//Draw the map selection buttons:
+		con.setDrawColor(Color.WHITE);
+		con.drawRect(100, 400, 200, 125);
+		con.drawString("Map (1)", 160, 450);
+
+		con.drawRect(500, 400, 200, 125);
+		con.drawString("Map (2)", 560, 450);
+		con.repaint();
+
+		//Return a valid map selection value:
+		boolean blnValidSelection = false;
+		char chrChoice = ' ';
+		while (blnValidSelection != true) {
+			chrChoice = con.getChar();
+			if (chrChoice == '1' || chrChoice == '2') {
+				blnValidSelection = true;
+			}
+		}
+
+		return chrChoice;
 	}
 
 	//Function to load death screen upon Player death, and cut the System/game

@@ -105,12 +105,12 @@ public class Battle {
 
                             //Animate sword slashing vertically:
                             int intAnimationCount = 0;
-                            while (intAnimationCount < 25) { //Enemy Size is 200x200 pixels
+                            while (intAnimationCount < 20) { //Enemy Size is 200x200 pixels
                                 //Keep regular battlefield entities:
                                 con.drawImage(imgBattlefield, 0, 0);
                                 con.drawImage(imgHero, 50, 100);
                                 con.drawImage(enemy.getEnemyImage(), 450, 100);
-                                con.drawImage(imgKatana, 420, 80 + 4 * intAnimationCount);
+                                con.drawImage(imgKatana, 420, 80 + 5 * intAnimationCount);
                                 con.repaint();
                                 //Show the entities on screen for a little while
                                 con.sleep(100);
@@ -123,12 +123,12 @@ public class Battle {
 
                             //Animate Sword Stabbing the Enemy:
                             intAnimationCount = 0; //Restart Count
-                            while (intAnimationCount < 25) {
+                            while (intAnimationCount < 20) {
                                 //Keep regular battlefield entities:
                                 con.drawImage(imgBattlefield, 0, 0);
                                 con.drawImage(imgHero, 50, 100);
                                 con.drawImage(enemy.getEnemyImage(), 450, 100);
-                                con.drawImage(imgKatana, 340 + 4 * intAnimationCount, 160);
+                                con.drawImage(imgKatana, 340 + 5 * intAnimationCount, 160);
                                 con.repaint();
                                 //Show the entities on screen for a little while
                                 con.sleep(100);
@@ -267,12 +267,12 @@ public class Battle {
 
                         //What happens when it is the enemy's turn:
                         int intAnimationCount = 0;
-                        while (intAnimationCount < 50) { //Hero Size is 138x200 pixels
+                        while (intAnimationCount < 40) { //Hero Size is 138x200 pixels
                             //Keep regular battlefield entities:
                             con.drawImage(imgBattlefield, 0, 0);
                             con.drawImage(imgHero, 50, 100);
                             con.drawImage(enemy.getEnemyImage(), 450, 100);
-                            con.drawImage(imgSlashWave, 380 - 5 * intAnimationCount, 160);
+                            con.drawImage(imgSlashWave, 380 - (int)(6.25 * intAnimationCount), 160);
                             con.setDrawColor(Color.WHITE);
                             con.drawString("Cloud Knight Patroller used 'Slash Wave'!", 30, 415);
                             con.repaint();
