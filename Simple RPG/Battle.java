@@ -61,6 +61,7 @@ public class Battle {
                 //Display both hero and enemy stats:
                 Main.displayHeroStats(con, hero);
                 displayEnemyStats(con, enemy);
+                Main.displayEnemyLevel(con, hero.getEnemiesDefeated());
 
                 //Initialize new variables specific for the battle:
                 int intHeroEnergy = 0;
@@ -173,6 +174,7 @@ public class Battle {
                             Main.displayHeroStats(con, hero);
                             renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                             displayEnemyStats(con, enemy);
+                            Main.displayEnemyLevel(con, hero.getEnemiesDefeated());
                         }
 
                         //Animation and Stats of Hero Ultimate Attack:
@@ -231,6 +233,7 @@ public class Battle {
                             Main.resetScreen(con);
                             Main.displayHeroStats(con, hero);
                             displayEnemyStats(con, enemy);
+                            Main.displayEnemyLevel(con, hero.getEnemiesDefeated());
                         }
 
                         //If enemy's HP is 0 or below by the end of the Hero's turn, the enemy is dead:
@@ -254,6 +257,7 @@ public class Battle {
                         renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                         Main.displayHeroStats(con, hero);
                         displayEnemyStats(con, enemy);
+                        Main.displayEnemyLevel(con, hero.getEnemiesDefeated());
                         con.sleep(1000);
 
                         //Check for possible Enemy death from DOT:
@@ -321,6 +325,7 @@ public class Battle {
                         renderBattleScreen(con, imgBattlefield, imgHero, enemy, intHeroEnergy);
                         Main.displayHeroStats(con, hero);
                         displayEnemyStats(con, enemy);
+                        Main.displayEnemyLevel(con, hero.getEnemiesDefeated());
 
                         //Switch back to Hero's turn:
                         intTurn--;
@@ -356,7 +361,7 @@ public class Battle {
         //Enemy x,y-coordinates change based on normal enemy or boss:
         if (enemy.getCurrentDMG() != 20) {
             //Note that the normal enemy's DMG will never hit 20 -- since it goes up by increments of three from Enraged stacks,
-            //enemy's DMG will be 10, 13, 16, 19, 22 != 20
+            //enemy's DMG will be 10, 13, 16, 19, 22 != 20 -- This works for all levels of enemy even though starting points change each time!
             con.drawImage(enemy.getEnemyImage(), 450, 100);
         } else {
             //For the Boss:
@@ -419,10 +424,12 @@ public class Battle {
             con.sleep(2500);
 
             con.drawString("Obtained 'Key'!", 300, 225);
-            con.drawImage(con.loadImage("Key.png"), 225, 260);
-            con.drawString("Press any key to continue", 250, 500);
+            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 230, 500);
+            con.drawString("Press any key to continue", 250, 525);
             con.repaint();
+
             con.getKey();
+
         } else if (hero.getEnemiesDefeated() == 2) {
             //Add a weapon item at 2 enemies defeated:
             hero.setNewItem("Sword");
@@ -433,8 +440,8 @@ public class Battle {
             con.sleep(2500);
 
             con.drawString("Obtained 'Sword'!", 300, 225);
-            con.drawImage(con.loadImage("Sword.png"), 300, 260);
-            con.drawString("Press any key to continue", 250, 500);
+            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 230, 500);
+            con.drawString("Press any key to continue", 250, 525);
             con.repaint();
 
             //Update Hero DMG stats:
@@ -451,7 +458,8 @@ public class Battle {
 
             con.drawString("Obtained 'Shield'!", 300, 225);
             con.drawImage(con.loadImage("Shield.png"), 300, 260);
-            con.drawString("Press any key to continue", 250, 500);
+            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 230, 500);
+            con.drawString("Press any key to continue", 250, 525);
             con.repaint();
 
             //Update Hero DEF Stats:

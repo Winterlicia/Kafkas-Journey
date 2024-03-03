@@ -57,6 +57,7 @@ public class Main {
 			renderMap(con, strMap, imgGrass, imgTree, imgBuilding, imgWater, imgEnemy, imgDoor);
 			displayHeroStats(con, hero);
 			displayHeroItems(con, hero.getItemList());
+			displayEnemyLevel(con, hero.getEnemiesDefeated());
 			//Note that row = y-axis, col = x-axis
 			con.drawImage(hero.getHeroImage(), hero.getCurrentColPosition() * 30, hero.getCurrentRowPosition() * 30);
 			con.repaint();
@@ -107,7 +108,8 @@ public class Main {
 			//Check when the player encounters an enemy:
 			if (strMap[hero.getCurrentRowPosition()][hero.getCurrentColPosition()].equals("e")) {
 				//Initialize a new instance of the "Enemy" object for the enemy, everytime "e" is called:
-				Enemy enemy = new Enemy(imgEnemyBattle, 45, 10, 10);
+				//Include "levels of enemy", that increases the enemy's stats based on the number of enemies defeated
+				Enemy enemy = new Enemy(imgEnemyBattle, 45 + 5 * hero.getEnemiesDefeated(), 10 + 3 * hero.getEnemiesDefeated(), 10 + (int) (1.25 * hero.getEnemiesDefeated()) );
 
 				//Call the battle functions (do later)
 				Battle.battleListener(con, hero, enemy, imgBattlefield, imgHeroBattle);
@@ -148,9 +150,9 @@ public class Main {
 				//Inform the Player of the new door:
 				resetScreen(con);
 				con.setDrawColor(Color.WHITE);
-				con.drawString("A mysterious door opened.", 250, 200);
+				con.drawString("The three keys disappear. A mysterious door opened.", 70, 200);
 				con.drawString("As Kafka approaches the door, it becomes colder and colder.", 30, 225);
-				con.sleep(3000);
+				con.sleep(2000);
 
 				con.drawString("Press any key to continue", 250, 400);
 				con.repaint();
@@ -190,10 +192,14 @@ public class Main {
 		//"Level" up the hero
 		resetScreen(con);
 		con.setDrawColor(Color.WHITE);
-		con.drawString("Entered a new area. Gained 15 Max HP!", 200, 225);
+		con.drawString("Entered a new area. Gained 15 Max HP!", 175, 225);
 		con.repaint();
-		con.sleep(2000);
+		con.sleep(1500);
 		hero.setNewHP(hero.getCurrentHP() + 15);
+
+		con.drawString("Press any key to continue", 250, 275);
+		con.repaint();
+		con.getKey();
 
 		//Reset to Hero's Starting Position:
 		hero.setNewRowPosition(19);
@@ -373,6 +379,7 @@ public class Main {
 		con.drawString("Health: "+objHero.getCurrentHP(), 660, 25);
 		con.drawString("Attack: "+objHero.getCurrentDMG(), 660, 50);
 		con.drawString("Defense: "+objHero.getCurrentDEF(), 660, 75);
+
 		con.repaint();
 	}
 
@@ -393,6 +400,13 @@ public class Main {
 		}
 	}
 
+	//Function to display the current Enemy Level
+	public static void displayEnemyLevel(Console con, int intEnemiesDefeated) {
+		con.setDrawColor(Color.WHITE);
+		con.drawString("ENEMY LEVEL: ", 650, 375);
+		con.drawString(String.valueOf(intEnemiesDefeated+1), 710, 400);
+		con.repaint();
+	}
 
 	//MENUS:
 	public static void helpMenu(Console con, BufferedImage imgWater, BufferedImage imgBuilding, BufferedImage imgTree, BufferedImage imgEnemy) {
@@ -501,11 +515,11 @@ public class Main {
 
 		//Draw the map selection buttons:
 		con.setDrawColor(Color.WHITE);
-		con.drawRect(100, 400, 200, 125);
-		con.drawString("Map (1)", 160, 450);
+		con.drawRect(115, 400, 200, 125);
+		con.drawString("Map (1)", 175, 450);
 
-		con.drawRect(500, 400, 200, 125);
-		con.drawString("Map (2)", 560, 450);
+		con.drawRect(505, 400, 200, 125);
+		con.drawString("Map (2)", 565, 450);
 		con.repaint();
 
 		//Return a valid map selection value:
