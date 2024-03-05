@@ -1,4 +1,4 @@
-import arc.*;
+import arc.Console;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -418,13 +418,13 @@ public class Battle {
             //Add a key item at 1, 3, 5 enemies defeated:
             hero.setNewItem("Key");
             con.drawString("Obtained 'Key'!", 300, 225);
-            con.drawImage(con.loadImage("Key.png"), 225, 260);
+            con.drawImage(con.loadImage("Key.png"), 235, 260);
             con.repaint();
             //Show for a little while:
             con.sleep(2500);
 
             con.drawString("Obtained 'Key'!", 300, 225);
-            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 230, 500);
+            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 210, 500);
             con.drawString("Press any key to continue", 250, 525);
             con.repaint();
 
@@ -440,7 +440,7 @@ public class Battle {
             con.sleep(2500);
 
             con.drawString("Obtained 'Sword'!", 300, 225);
-            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 230, 500);
+            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 210, 500);
             con.drawString("Press any key to continue", 250, 525);
             con.repaint();
 
@@ -458,7 +458,7 @@ public class Battle {
 
             con.drawString("Obtained 'Shield'!", 300, 225);
             con.drawImage(con.loadImage("Shield.png"), 300, 260);
-            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 230, 500);
+            con.drawString("Enemy level has increased to "+(hero.getEnemiesDefeated()+1)+"!", 210, 500);
             con.drawString("Press any key to continue", 250, 525);
             con.repaint();
 
